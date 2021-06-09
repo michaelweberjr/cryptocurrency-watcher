@@ -1,7 +1,6 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 
@@ -22,7 +21,8 @@ mongoose.connect(mongoURL, {
     .catch(err => console.log(err));
 
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '../index.html'));
@@ -35,15 +35,20 @@ app.get('/style.css', (req, res) => {
 app.use(express.static(path.resolve(__dirname, '../dist')));
 
 // Routers
-const loginRoute = require('./routes/signup.js');
-app.use('/signup', loginRoute);
-
-const signupRoute = require('./routes/login.js');
+const loginRoute = require('./routes/login.js');
 app.use('/login', loginRoute);
 
-app.get('/session', (req, res) => {
-  res.status(200).json({tag: 2});
-});
+const logoutRoute = require('./routes/logout.js');
+app.use('/logout', logoutRoute);
+
+const signupRoute = require('./routes/signup.js');
+app.use('/signup', signupRoute);
+
+const sessionRoute = require('./routes/session.js');
+app.use('/session', sessionRoute);
+
+const watcherRoute = require('./routes/watcher');
+app.use('/watcher', watcherRoute);
 
 /**
  * 404 handler

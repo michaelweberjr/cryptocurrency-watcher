@@ -2,9 +2,8 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+    box-shadow: 0 0 5px rgb(191, 211, 238);
 }
-
-
 .mainContainer {
     display: flex;
     flex-direction: column;
@@ -12,19 +11,88 @@
     align-items: center;
 }
 
-.adderBox {
-    border: 1rem, solid, rgba(0, 0, 0, 1);
-    border-radius: 2rem;
-    box-shadow: 2rem, rgba(0, 0, 0, 1);
+.boxContainer {
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgb(191, 211, 238);
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 33%
 }
 
+button {
+    padding: 10px;
+    border: 1px solid rgb(191, 211, 238);
+    border-radius: 0px;
+    font-size: 0.75rem;
+    background-color: white;
+}
+
+.boxContainer > button {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 .adderDiv {
     display: flex;
     width: 100%;
     align-self: center;
+}
+
+.gridContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    grid-gap: 20px;
+    width: 100%;
+}
+
+.gridBox {
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0 0 10px rgb(191, 211, 238);
+    margin: 5px;
+    border-radius: 5px;
+  }
+
+.managerGrid {
+    display: grid;
+    grid-template-columns: 360px 600px;
+    grid-gap: 20px;
+    width: 75%;
+}
+
+.managerContainer {
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0 0 10px rgb(191, 211, 238);
+    margin: 5px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.managerContainer > button {
+    margin-top: 10px;
+}
+
+.watcherList {
+    align-self: flex-start;
+    margin-left: 60px;
+}
+
+.currencySelector {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+label {
+    margin-right: 10px;
+}
+
+input {
+    border: 1px solid rgb(191, 211, 238);
 }
 

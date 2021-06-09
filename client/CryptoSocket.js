@@ -1,0 +1,184 @@
+const baseURL = 'https://api.pro.coinbase.com/currencies'
+const socketURL = 'wss://ws-feed.pro.coinbase.com';
+
+var cbSocket = null;
+var currWatchers = [];
+const useSocket = (state) => {
+  if(state.watchers.length && cbSocket === null) {
+    cbSocket = new WebSocket(socketURL);
+    cbSocket.onopen = (e) => {
+      const subscriber = {
+          type: "subscribe",
+          product_ids: state.watchers,
+          channels: ["ticker"]
+      };
+
+      cbSocket.send(JSON.stringify(subscriber));
+    };
+    currWatchers = [...state.watchers];
+
+    cbSocket.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      if(data.type === 'ticker') {
+        const product = state.products[data.product_id];
+        product.price = data.price;
+        product.listeners.forEach(cb => cb(data.price, data.time));
+      }
+    };
+
+  }
+  else if(state.watchers.length === 0) {
+    closeSocket();
+  }
+  else if(state.watchers.length !== currWatchers.length) {
+    cbSocket.onmessage = null;
+
+    let subscriber = {
+      type: "unsubscribe",
+      product_ids: currWatchers,
+      channels: ["ticker"]
+    }
+    cbSocket.send(JSON.stringify(subscriber));
+    currWatchers = [...state.watchers];
+
+    cbSocket.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      if(data.type === "subscriptions") {
+        subscriber = {
+          type: "subscribe",
+          product_ids: currWatchers,
+          channels: ["ticker"]
+        }
+        cbSocket.send(JSON.stringify(subscriber));
+
+        cbSocket.onmessage = (e) => {
+          const data = JSON.parse(e.data);
+          if(data.type === 'ticker') {
+            const product = state.products[data.product_id];
+            product.price = data.price;
+            product.listeners.forEach(cb => cb(data.price, data.time));
+          }
+        };
+      }
+    };
+  }
+}
+
+function closeSocket() {
+  if(cbSocket !== null) {
+    cbSocket.close();
+    cbSocket = null;
+    currWatchers = [];
+  }
+}
+
+class CryptoSocket {
+  constructor() {
+    this.state = {
+      watchers: [],
+      products: {},
+      socket: null,
+      loaded: false,
+    };
+    fetch(baseURL)
+    .then(data => data.json())
+    .then(data => {
+        this.state.fiatList = data.filter(cur => cur.details.type === 'fiat').sort((a, b) => a.name < b.name);
+        this.state.cryptoList = data.filter(cur => cur.details.type === 'crypto').sort((a, b) => a.name > b.name);
+        this.state.loaded = true;
+    })
+    .catch(err => console.log(JSON.stringify(err)));
+  }
+
+  createWatcher(cryptoId, fiatId, callback) {
+    const product = {
+      price: -1,
+      listeners: []
+    };
+
+    for(let i = 0; i < this.state.cryptoList.length; i++) {
+      if(this.state.cryptoList[i].id === cryptoId) {
+        product.crypto = {
+          id: this.state.cryptoList[i].id,
+          name: this.state.cryptoList[i].name,
+        }
+        break;
+      }
+    }
+
+    for(let i = 0; i < this.state.fiatList.length; i++) {
+      if(this.state.fiatList[i].id === fiatId) {
+        product.fiat = {
+          id: this.state.fiatList[i].id,
+          name: this.state.fiatList[i].name,
+          symbol: this.state.fiatList[i].details.symbol,
+        }
+        break;
+      }
+    }
+
+    product.id = product.crypto.id + '-' + product.fiat.id
+    if(!this.state.products[product.id]) {
+      this.state.products[product.id] = product;
+    }
+
+    if(!this.state.watchers.includes(product.id)) {
+      this.state.watchers.push(product.id);
+      useSocket(this.state);
+      callback(this.state.watchers);
+    }
+  }
+
+  setWatchers(ids) {
+    ids.forEach(id => {
+      const [cryptoId, fiatId] = id.split('-');
+
+      const product = {
+        price: -1,
+        listeners: []
+      };
+  
+      for(let i = 0; i < this.state.cryptoList.length; i++) {
+        if(this.state.cryptoList[i].id === cryptoId) {
+          product.crypto = {
+            id: this.state.cryptoList[i].id,
+            name: this.state.cryptoList[i].name,
+          }
+          break;
+        }
+      }
+  
+      for(let i = 0; i < this.state.fiatList.length; i++) {
+        if(this.state.fiatList[i].id === fiatId) {
+          product.fiat = {
+            id: this.state.fiatList[i].id,
+            name: this.state.fiatList[i].name,
+            symbol: this.state.fiatList[i].details.symbol,
+          }
+          break;
+        }
+      }
+  
+      product.id = product.crypto.id + '-' + product.fiat.id
+      this.state.watchers.push(product.id);
+      this.state.products[product.id] = product;
+    });
+
+    useSocket(this.state);
+  }
+
+  removeWatchers(ids, callback) {
+    const indexes = ids.map(id => this.state.watchers.indexOf(id));
+    this.state.watchers = this.state.watchers.filter((w, i) => !indexes.includes(i));
+    ids.forEach(id => this.state.products[id].listeners = []);
+    useSocket(this.state);
+    callback(this.state.watchers);
+  }
+
+  addListener(id, callback) {
+    this.state.products[id].listeners.push(callback);
+  }
+}
+
+export default CryptoSocket;
+export { closeSocket };

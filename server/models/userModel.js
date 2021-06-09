@@ -14,18 +14,18 @@ const userSchema = new Schema({
   watchers: [ String ],
 });
 
-userSchema.pre("save", function (next) {
-  bcrypt
-    .hash(this.password + mangle, SALT_WORK_FACTOR)
-    .then((hash) => {
-      this.password = hash;
-      next();
-    })
-    .catch((err) => {
-      console.log(err);
-      next(err);
-    });
-});
+// userSchema.pre("save", function (next) {
+//   bcrypt
+//     .hash(this.password + mangle, SALT_WORK_FACTOR)
+//     .then((hash) => {
+//       this.password = hash;
+//       next();
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       next(err);
+//     });
+// });
 
 userSchema.methods.comparePassword = function (password, callback) {
   bcrypt.compare(password + mangle, this.password, function (err, isMatch) {
@@ -34,5 +34,5 @@ userSchema.methods.comparePassword = function (password, callback) {
   });
 };
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("user", userSchema);
     

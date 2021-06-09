@@ -1,0 +1,30 @@
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.adderBox {
+    border: 1rem, solid, rgba(0, 0, 0, 1);
+    border-radius: 2rem;
+    box-shadow: 2rem, rgba(0, 0, 0, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 33%
+}
+
+.adderDiv {
+    display: flex;
+    width: 100%;
+    align-self: center;
+}
+

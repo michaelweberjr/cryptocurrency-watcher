@@ -5,7 +5,7 @@
   "main": "./client/index.jsx",
   "scripts": {
     "dev": "cross-env NODE_ENV=development; concurrently \"nodemon server/server.js\"  \"webpack-dev-server --open\"",
-    "start": "cross-env NODE_ENV=production; concurrently \"webpack\" \"nodemon server/server.js\""
+    "start": "cross-env NODE_ENV=production; concurrently \"webpack\" \"node server/server.js\""
   },
   "keywords": [
     "tree"

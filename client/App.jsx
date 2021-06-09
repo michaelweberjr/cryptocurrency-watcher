@@ -9,7 +9,7 @@ import { closeSocket } from './CryptoSocket.js';
 var makeFetchCall = true;
 
 function App(props) {
-    const [ state, setState ] = useState({ tab:-1, watchers:[] });
+    const [ state, setState ] = useState({ tab:69, watchers:[] });
 
     useEffect(() => {
         const loading = () => {
@@ -94,7 +94,7 @@ function App(props) {
     else if(state.tab === 1) mainElement = <CryptoAdder  watchers={state.watchers} socket={props.socket} setWatchers={setWatchers}/>;
     else if(state.tab === 2) mainElement = <Signup signup={signUp}/>;
     else if(state.tab === 3) mainElement = <Login login={logIn} signup={() => setTab(2)}/>;
-    else if(state.tab === -1) mainElement = <h2>Loading...</h2>;
+    else if(state.tab === 69) mainElement = <h2>Loading...</h2>;
 
     return (
         <div>

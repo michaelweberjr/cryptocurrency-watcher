@@ -50,10 +50,16 @@ const ReactChart = (props) => {
                 scales: {
                     y: {
                         ticks: {
+                            color: 'rgb(70, 120, 210)',
                             callback: (value, index, values) => props.socket.state.products[props.id].fiat.symbol + value
                         }
                     },
-                }
+                    x: {
+                        ticks: {
+                            color: 'rgb(70, 120, 210)',
+                        }
+                    }
+                },
             },
             data: {
                 labels:[],

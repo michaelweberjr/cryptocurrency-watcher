@@ -32,7 +32,15 @@ app.get('/style.css', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '../style.css'));
 });
 
-app.use(express.static(path.resolve(__dirname, '../dist')));
+app.get('/favicon.ico', (req, res) => {
+  res.status(200).sendFile(path.join(__dirname, '../stocks.png'));
+});
+
+app.get('/dist/bundle.js', (req, res) => {
+  res.status(200).sendFile(path.join(__dirname, '../dist/bundle.js'));
+});
+
+//app.use(express.static(path.join(__dirname, '../dist')));
 
 // Routers
 const loginRoute = require('./routes/login.js');

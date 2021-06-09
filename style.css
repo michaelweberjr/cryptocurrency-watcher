@@ -26,6 +26,12 @@ button {
     border-radius: 0px;
     font-size: 0.75rem;
     background-color: white;
+    color:rgb(28, 95, 182);
+}
+
+button:hover {
+    background-color: rgb(6, 84, 187);
+    color: white;
 }
 
 .boxContainer > button {
@@ -90,9 +96,21 @@ button {
 
 label {
     margin-right: 10px;
+    color:rgb(28, 95, 182);
 }
 
 input {
     border: 1px solid rgb(191, 211, 238);
 }
 
+h2 {
+    color:rgb(6, 84, 187);
+}
+
+h3 {
+    color:rgb(6, 84, 187);
+}
+
+p {
+   color: rgb(6, 84, 187);
+}

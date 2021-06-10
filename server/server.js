@@ -58,6 +58,9 @@ app.use('/session', sessionRoute);
 const watcherRoute = require('./routes/watcher');
 app.use('/watcher', watcherRoute);
 
+const tensorRoute = require('./routes/tensor.js');
+app.use('/tensor', tensorRoute);
+
 /**
  * 404 handler
  */

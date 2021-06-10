@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Chart from 'chart.js/auto';
-import 'chartjs-adapter-date-fns';
+import CryptoChart from './CryptoChart.jsx';
 
 const CryptoCard = (props) => {
     const { socket, id } = props;
@@ -11,7 +10,8 @@ const CryptoCard = (props) => {
         <div className="gridBox">
             <p>{product.crypto.name} to {product.fiat.name}</p>
             <p>Price: <Price socket={socket} id={id}/></p>
-            <ReactChart socket={socket} id={id}/>
+            <CryptoChart socket={socket} id={id}/>
+            <Predictor socket={socket} id={id}/>
         </div>
     );
 }
@@ -30,86 +30,27 @@ const Price = (props) => {
     );
 } 
 
-const ReactChart = (props) => {
+const Predictor = (props) => {
     const [state, setState] = useState(0);
-    
-    useEffect(() => {
-        const config = {
-            type: 'line',
-            options: {
-                plugins: {
-                    legend: {
-                        display: false,
-                    }
-                },
-                elements: {
-                    point: {
-                        radius: 1,
-                    }
-                },
-                scales: {
-                    y: {
-                        ticks: {
-                            color: 'rgb(70, 120, 210)',
-                            callback: (value, index, values) => props.socket.state.products[props.id].fiat.symbol + value
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            color: 'rgb(70, 120, 210)',
-                        }
-                    }
-                },
-            },
-            data: {
-                labels:[],
-                datasets: [{
-                    backgroundColor: 'rgb(128,200,128)',
-                    borderColor: 'rgb(128,200,128)',
-                    data: [],
-                }]
-            }
-        }
+    if(state === 0) {
+        props.socket.state.predictors[props.id].addListener((curr, prev) => {
+            setState({ curr, prev });
+        });
+    }
 
-        const utcTimes = [];
-        const chart = new Chart(document.getElementById('watcher' + props.id), config);
-        props.socket.addListener(props.id, (price, time) => {
-            const date = new Date(time);
-            const utcTime = date.valueOf(time);
-            const formatedTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-
-            if(!config.data.labels.length) {
-                config.data.datasets[0].data.push(price);
-                config.data.labels.push(formatedTime);
-                chart.update();
-            }
-            if(config.data.labels.length && utcTime - utcTimes[utcTimes.length - 1] > 500) {
-                if(config.data.labels.length === 120) {
-                    config.data.labels.shift();
-                    config.data.datasets[0].data.shift();
-                }
-
-                config.data.datasets[0].data.push(price);
-                config.data.labels.push(formatedTime);
-                utcTimes.push(utcTime);
-                chart.update();
-            }
-            else {
-                config.data.datasets[0].data[config.data.datasets[0].data.length - 1] = price;
-                config.data.labels[config.data.labels.length - 1] = formatedTime;
-                utcTimes[utcTimes.length - 1] = utcTime;
-                chart.update();
-            }
-        })
-    })
+    const symbol = props.socket.state.products[props.id].fiat.symbol;
 
     return (
         <div>
-            <canvas id={'watcher'+props.id}></canvas>
+            {state.curr && <p>Current Prediction: {symbol + Math.round(100*state.curr.price)/100} at {timeFormat(state.curr.time)}</p>}
+            {state.prev && <p>Last Prediction: {symbol + Math.round(100*state.curr.price)/100} at {timeFormat(state.prev.time)}; Actual: {symbol + state.prev.actual} Diff: {symbol + state.prev.diff}</p>}
         </div>
     );
 }
 
-
+function timeFormat(time) {
+    const date = new Date(time);
+    return date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+}
 
 export default CryptoCard;

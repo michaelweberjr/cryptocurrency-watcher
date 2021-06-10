@@ -79,6 +79,7 @@ class CryptoSocket {
       products: {},
       socket: null,
       loaded: false,
+      predictors: {},
     };
     fetch(baseURL)
     .then(data => data.json())
@@ -120,6 +121,7 @@ class CryptoSocket {
     product.id = product.crypto.id + '-' + product.fiat.id
     if(!this.state.products[product.id]) {
       this.state.products[product.id] = product;
+      this.state.predictors[product.id] = new Predictor(product.id, this);
     }
 
     if(!this.state.watchers.includes(product.id)) {
@@ -162,6 +164,7 @@ class CryptoSocket {
       product.id = product.crypto.id + '-' + product.fiat.id
       this.state.watchers.push(product.id);
       this.state.products[product.id] = product;
+      this.state.predictors[product.id] = new Predictor(product.id, this);
     });
 
     useSocket(this.state);
@@ -179,6 +182,60 @@ class CryptoSocket {
     this.state.products[id].listeners.push(callback);
   }
 }
+
+class Predictor {
+  constructor(id, socket) {
+    this.events = { id, prices:[], timeStamps:[] };
+    this.listeners = [];
+    this.lastPrediction = null;
+    this.currentPrediction = null;
+
+    socket.addListener(id, this.batchEvents.bind(this));
+  }
+
+  batchEvents(price, time) {
+    const utcTime = Date.parse(time);
+    this.events.prices.push(price);
+    this.events.timeStamps.push(utcTime);
+
+    if(this.currentPrediction) {
+      if(utcTime >= this.currentPrediction.time) {
+        this.getPrediction();
+      }
+    }
+  }
+
+  addListener(callback) {
+    this.listeners.push(callback);
+    if(!this.currentPrediction) setTimeout(this.getPrediction.bind(this), 1000);
+  }
+
+  getPrediction() {
+    const lastPrice = this.events.prices[this.events.prices.length - 1];
+    fetch(`/tensor`, { method: 'POST', 
+            headers: {
+                'Content-Type': 'Application/JSON'
+            }, 
+            body: JSON.stringify(this.events) })
+            .then(data => data.json())
+            .then(data => {
+                this.lastPrediction = this.currentPrediction;
+                if(this.lastPrediction) {
+                  this.lastPrediction.actual = lastPrice;
+                  this.lastPrediction.diff = Math.abs(lastPrice - this.lastPrediction.price);
+                }
+                this.currentPrediction = data;
+                this.listeners.forEach(callback => callback(this.currentPrediction, this.lastPrediction));
+            })
+            .catch(err => {
+                console.log('Fetch error: ', err);
+            });
+
+    this.events.prices = [];
+    this.events.timeStamps = [];
+  }
+}
+
 
 export default CryptoSocket;
 export { closeSocket };

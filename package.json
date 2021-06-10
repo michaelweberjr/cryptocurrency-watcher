@@ -13,6 +13,7 @@
   "author": "Michael Weber",
   "license": "MIT",
   "dependencies": {
+    "@tensorflow/tfjs-node": "^3.7.0",
     "concurrently": "^6.2.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"

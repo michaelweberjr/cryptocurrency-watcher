@@ -9,9 +9,11 @@ const Dashboard = (props) => {
     const list = [];
     props.watchers.forEach((w, i) => list.push(<CryptoCard key={'w' + i} socket={props.socket} id={w}/>));
     
+    if(list.length === 0) list.push(<h3>You don't have any watchers, click 'manage' to add some.</h3>);
+
     return (
         <div className='gridContainer'>
-                {list}
+            {list}
         </div>
     );
 }

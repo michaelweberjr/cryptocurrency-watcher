@@ -56,10 +56,7 @@ sessionController.endSession = (req, res, next) => {
 
 sessionController.validateSession = (req, res, next) => {
   if(!req.cookies.ssid) {
-    return next({
-      log: 'Error in sessionController.validateSession: missing user id',
-      message: 'Error in sessionController.validateSession: internal server error, check the logs'
-    });
+    return next();
   }
   else {
     Session.findOne({ ssid: req.cookies.ssid }, (err, session) => {

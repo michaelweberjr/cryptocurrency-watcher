@@ -107,6 +107,7 @@ function App(props) {
                     <button id="dashboardBtn" onClick={() => setTab(0)}>Dashboard</button>
                     <button id="addCryptoBtn" onClick={() => setTab(1)}>Manage</button>
                 </span>
+                <h2>Crypto Watcher</h2>
                 <span className="rightButtons">
                     <button id="logOutBtn" onClick={logOut}>Log Out</button>
                 </span>

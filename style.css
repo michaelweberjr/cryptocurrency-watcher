@@ -4,6 +4,11 @@
     justify-content: space-between;
     box-shadow: 0 0 5px rgb(191, 211, 238);
 }
+
+.header > h2 {
+    margin: 0px 0px;
+}
+
 .mainContainer {
     display: flex;
     flex-direction: column;
@@ -101,6 +106,10 @@ label {
 
 input {
     border: 1px solid rgb(191, 211, 238);
+}
+
+h1 {
+    color:rgb(6, 84, 187);
 }
 
 h2 {

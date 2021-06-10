@@ -50,7 +50,7 @@ const Predictor = (props) => {
             setState({ curr, prev });
         });
 
-        const curr = props.socket.state.predictors[props.id].currPrediction;
+        const curr = props.socket.state.predictors[props.id].currentPrediction;
         const prev = props.socket.state.predictors[props.id].lastPrediction;
         setState({ curr, prev });
     }

@@ -10,6 +10,7 @@ const Signup = (props) => {
 
     return (
         <div className='boxContainer'>
+            <h2>Crypto Watcher</h2>
             <h3>Create Account</h3>
             <label htmlFor="usernameInput">Username</label>
             <input id="usernameInput" type="text"></input>

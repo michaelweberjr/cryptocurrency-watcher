@@ -49,6 +49,10 @@ const Predictor = (props) => {
         props.socket.state.predictors[props.id].addListener((curr, prev) => {
             setState({ curr, prev });
         });
+
+        const curr = props.socket.state.predictors[props.id].currPrediction;
+        const prev = props.socket.state.predictors[props.id].lastPrediction;
+        setState({ curr, prev });
     }
 
     const symbol = props.socket.state.products[props.id].fiat.symbol;

@@ -9,7 +9,7 @@ const addWatcher = (socket, callback) => {
 }
 
 const removeWatchers = (socket, callback) => {
-  const ids = Array.from(document.getElementsByTagName('input')).filter(cb => cb.checked).map(cb => cb.value);
+  const ids = Array.from(document.getElementsByClassName('removerCheckBoxes')).filter(cb => cb.checked).map(cb => cb.value);
   socket.removeWatchers(ids, callback);
 }
 
@@ -25,7 +25,7 @@ const CryptoAdder = (props) => {
   const currWatcherList = [];
   watchers.forEach((w, i) => currWatcherList.push(
       <div key={w + 'CheckBox'}>
-        <input type="checkbox" id={w+'CheckBox'} name={w} value={w}></input>
+        <input type="checkbox" id={w+'CheckBox'} className="removerCheckBoxes" name={w} value={w}></input>
         <label htmlFor={w}>{w}</label>
       </div>
     ));
@@ -41,7 +41,7 @@ const CryptoAdder = (props) => {
           <div className="predictionSliderDiv">
             <p>Show Predictions: </p>
             <label className="switch">
-              <input type="checkbox" onClick={(e)=>props.setPredictions(e.target.checked)} checked={props.showPredictions}></input>
+              <input type="checkbox" onClick={(e)=>props.setPredictions(e.target.checked)} defaultChecked={props.showPredictions}></input>
               <span className="slider"></span>
             </label>
           </div>

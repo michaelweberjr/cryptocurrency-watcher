@@ -24,7 +24,7 @@ const CryptoChart = (props) => {
                     y: {
                         ticks: {
                             color: 'rgb(70, 120, 210)',
-                            callback: (value, index, values) => props.socket.state.products[props.id].fiat.symbol + value
+                            callback: (value, index, values) => props.socket.state.products[props.id].fiat.symbol + Math.round(value*10000)/10000,
                         }
                     },
                     x: {

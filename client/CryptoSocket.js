@@ -189,6 +189,7 @@ class Predictor {
     this.listeners = [];
     this.lastPrediction = null;
     this.currentPrediction = null;
+    this.waiting = false;
 
     socket.addListener(id, this.batchEvents.bind(this));
   }
@@ -198,7 +199,7 @@ class Predictor {
     this.events.prices.push(price);
     this.events.timeStamps.push(utcTime);
 
-    if(this.currentPrediction) {
+    if(this.currentPrediction && !this.waiting) {
       if(utcTime >= this.currentPrediction.time) {
         this.getPrediction();
       }
@@ -212,6 +213,7 @@ class Predictor {
 
   getPrediction() {
     const lastPrice = this.events.prices[this.events.prices.length - 1];
+    this.waiting = true;
     fetch(`/tensor`, { method: 'POST', 
             headers: {
                 'Content-Type': 'Application/JSON'
@@ -226,6 +228,7 @@ class Predictor {
                 }
                 this.currentPrediction = data;
                 this.listeners.forEach(callback => callback(this.currentPrediction, this.lastPrediction));
+                this.waiting = false;
             })
             .catch(err => {
                 console.log('Fetch error: ', err);

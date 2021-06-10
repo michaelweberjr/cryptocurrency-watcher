@@ -9,24 +9,37 @@ const CryptoCard = (props) => {
     return (
         <div className="gridBox">
             <p>{product.crypto.name} to {product.fiat.name}</p>
-            <p>Price: <Price socket={socket} id={id}/></p>
+            <Price socket={socket} id={id}/>
             <CryptoChart socket={socket} id={id}/>
-            <Predictor socket={socket} id={id}/>
+            {props.showPredictions && <Predictor socket={socket} id={id}/>}
         </div>
     );
 }
 
+const priceLowHighs = {};
+
 const Price = (props) => {
-    const [state, setState] = useState({ price:0, firstRun:true });
+    const [state, setState] = useState({ price:0, firstRun:true, low:0, high:0 });
     if(state.firstRun) {
-        props.socket.addListener(props.id, (price) => setState({ firstRun:false, price}));
+        if(!priceLowHighs[props.id]) priceLowHighs[props.id] = { low:Infinity, high:-Infinity };
+        props.socket.addListener(props.id, (price) => {
+            const stats = priceLowHighs[props.id];
+            if(price > stats.high) stats.high = price;
+            if(price < stats.low) stats.low = price;
+
+            setState({...stats, firstRun:false, price});
+        });
         setState({...state, firstRun:false});
     }
 
     const symbol = props.socket.state.products[props.id].fiat.symbol;
 
     return (
-        <span>{symbol+state.price.toString(2)}</span>
+        <p className='priceSpan'>
+            <span className="green">High: {symbol+state.high}</span>
+            <span>Price: {symbol+state.price}</span>
+            <span className="red">Low: {symbol+state.low}</span>
+        </p>
     );
 } 
 
@@ -43,7 +56,7 @@ const Predictor = (props) => {
     return (
         <div>
             {state.curr && <p>Current Prediction: {symbol + Math.round(100*state.curr.price)/100} at {timeFormat(state.curr.time)}</p>}
-            {state.prev && <p>Last Prediction: {symbol + Math.round(100*state.curr.price)/100} at {timeFormat(state.prev.time)}; Actual: {symbol + state.prev.actual} Diff: {symbol + state.prev.diff}</p>}
+            {state.prev && <p>Last Prediction: {symbol + Math.round(100*state.prev.price)/100} at {timeFormat(state.prev.time)}; Actual: {symbol + Math.round(100 * state.prev.actual) / 100} Diff: {symbol + Math.round(100 * state.prev.diff) / 100}</p>}
         </div>
     );
 }

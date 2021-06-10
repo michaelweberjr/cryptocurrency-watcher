@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Chart from 'chart.js/auto';
 
+const timePriceData = {};
+
 const CryptoChart = (props) => {
     const [state, setState] = useState(0);
     
@@ -42,35 +44,33 @@ const CryptoChart = (props) => {
             }
         }
 
-        const utcTimes = [];
         const chart = new Chart(document.getElementById('watcher' + props.id), config);
         props.socket.addListener(props.id, (price, time) => {
             const date = new Date(time);
             const utcTime = date.valueOf(time);
             const formatedTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+            
+            if(!timePriceData[props.id]) timePriceData[props.id] = {utcTime:0, prices:[], formatedTimes:[]};
+            const data = timePriceData[props.id];
 
-            if(!config.data.labels.length) {
-                config.data.datasets[0].data.push(price);
-                config.data.labels.push(formatedTime);
-                chart.update();
-            }
-            if(config.data.labels.length && utcTime - utcTimes[utcTimes.length - 1] > 500) {
-                if(config.data.labels.length === 120) {
-                    config.data.labels.shift();
-                    config.data.datasets[0].data.shift();
+            if(!data.prices.length || utcTime - data.utcTime > 500) {
+                if(data.prices.length === 120) {
+                    data.prices.shift();
+                    data.formatedTimes.shift();
                 }
 
-                config.data.datasets[0].data.push(price);
-                config.data.labels.push(formatedTime);
-                utcTimes.push(utcTime);
-                chart.update();
+                data.prices.push(price);
+                data.formatedTimes.push(formatedTime);
+                data.utcTime = utcTime;
             }
             else {
-                config.data.datasets[0].data[config.data.datasets[0].data.length - 1] = price;
-                config.data.labels[config.data.labels.length - 1] = formatedTime;
-                utcTimes[utcTimes.length - 1] = utcTime;
-                chart.update();
+                data.prices[data.prices.length - 1] = price;
+                data.formatedTimes[data.formatedTimes - 1] = formatedTime;
             }
+
+            config.data.datasets[0].data = data.prices;
+            config.data.labels = data.formatedTimes;
+            chart.update();
         })
     })
 

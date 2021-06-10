@@ -114,3 +114,80 @@ h3 {
 p {
    color: rgb(6, 84, 187);
 }
+
+.priceSpan {
+    display: flex;
+    justify-content: space-between;
+}
+
+.green {
+    color: rgb(44, 143, 44);
+}
+
+.red {
+    color: rgb(201, 67, 67);
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 17px;
+    margin-top: 2px;
+  }
+  
+  .predictionSliderDiv {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 180px;
+  }
+
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 17px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 13px;
+    width: 13px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: rgb(144, 179, 224);
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px rgb(144, 179, 224);
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(13px);
+    -ms-transform: translateX(13px);
+    transform: translateX(13px);
+  }
+  

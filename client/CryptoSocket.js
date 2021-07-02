@@ -121,7 +121,7 @@ class CryptoSocket {
     product.id = product.crypto.id + '-' + product.fiat.id
     if(!this.state.products[product.id]) {
       this.state.products[product.id] = product;
-      this.state.predictors[product.id] = new Predictor(product.id, this);
+      // this.state.predictors[product.id] = new Predictor(product.id, this);
     }
 
     if(!this.state.watchers.includes(product.id)) {
@@ -164,7 +164,7 @@ class CryptoSocket {
       product.id = product.crypto.id + '-' + product.fiat.id
       this.state.watchers.push(product.id);
       this.state.products[product.id] = product;
-      this.state.predictors[product.id] = new Predictor(product.id, this);
+      // this.state.predictors[product.id] = new Predictor(product.id, this);
     });
 
     useSocket(this.state);

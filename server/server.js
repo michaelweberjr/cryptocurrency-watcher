@@ -9,6 +9,7 @@ const { mongoURL } = JSON.parse(fs.readFileSync(path.join(__dirname, '../dist/co
 const app = express();
 
 const PORT = 3000;
+const HOST = '0.0.0.0';
 
 mongoose.connect(mongoURL, {
     // options for the connect method to parse the URI
@@ -76,7 +77,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).send(err.message);
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, HOST, () => {
   console.log(`Listening on port ${PORT}...`);
 });
 

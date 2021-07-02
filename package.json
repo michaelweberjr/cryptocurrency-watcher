@@ -13,10 +13,12 @@
   "author": "Michael Weber",
   "license": "MIT",
   "dependencies": {
-    "@tensorflow/tfjs-node": "^3.7.0",
     "concurrently": "^6.2.0",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react-dom": "^16.12.0",
+    "bcrypt": "^5.0.1",
+    "chart.js": "^3.3.2",
+    "mongoose": "^5.12.13"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",
@@ -24,8 +26,6 @@
     "@babel/preset-env": "^7.7.1",
     "@babel/preset-react": "^7.7.0",
     "babel-loader": "^8.0.6",
-    "bcrypt": "^5.0.1",
-    "chart.js": "^3.3.2",
     "chartjs-adapter-date-fns": "^1.1.0-beta.1",
     "concurrency": "^0.1.4",
     "cookie-parser": "^1.4.5",
@@ -38,7 +38,6 @@
     "eslint-plugin-react": "^7.21.5",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
-    "mongoose": "^5.12.13",
     "nodemon": "^2.0.7",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.12",

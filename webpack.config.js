@@ -27,6 +27,7 @@ module.exports = {
     ],
   },
   devServer: {
+    // host: '0.0.0.0',
     publicPath: '/dist/',
     proxy: {
       '/': 'http://localhost:3000',

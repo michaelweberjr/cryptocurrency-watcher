@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 const fs = require('fs');
 const path = require('path');
 
@@ -27,12 +27,12 @@ const userSchema = new Schema({
 //     });
 // });
 
-userSchema.methods.comparePassword = function (password, callback) {
-  bcrypt.compare(password + mangle, this.password, function (err, isMatch) {
-    if (err) return callback(err);
-    else return callback(null, isMatch);
-  });
-};
+// userSchema.methods.comparePassword = function (password, callback) {
+//   bcrypt.compare(password + mangle, this.password, function (err, isMatch) {
+//     if (err) return callback(err);
+//     else return callback(null, isMatch);
+//   });
+// };
 
 module.exports = mongoose.model("user", userSchema);
     

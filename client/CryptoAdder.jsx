@@ -38,13 +38,13 @@ const CryptoAdder = (props) => {
             {currWatcherList}
           </div>
           <button id="removeButton" onClick={() => removeWatchers(socket, setWatchers)}>Remove Selected</button>
-          <div className="predictionSliderDiv">
+          {/* <div className="predictionSliderDiv">
             <p>Show Predictions: </p>
             <label className="switch">
               <input type="checkbox" onClick={(e)=>props.setPredictions(e.target.checked)} defaultChecked={props.showPredictions}></input>
               <span className="slider"></span>
             </label>
-          </div>
+          </div> */}
         </div>
         <div className="managerContainer">
           <h3>Add Currency Watcher</h3>
